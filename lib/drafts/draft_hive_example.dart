@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:spaced/spaced.dart';
 
+class DraftConstants {
+  static const String boxName = 'myBox';
+  static const String boxKeyName = 'name';
+}
+
+late final Box _box;
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox('myBox');
+  _box = await Hive.openBox(DraftConstants.boxName);
 
   runApp(const MyApp());
 }
@@ -28,12 +36,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String? name;
+  TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.text = _box.get(DraftConstants.boxKeyName, defaultValue: '');
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final box = Hive.box('myBox');
-
     return Scaffold(
       appBar: AppBar(title: const Text('Hive CE Example')),
       body: SpacedColumn(
@@ -42,23 +60,22 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
+              controller: textEditingController,
               onChanged: (val) {
-                setState(() {
-                  name = val;
-                });
+                _box.put(DraftConstants.boxKeyName, textEditingController.text);
               },
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              box.put('name', name);
+              _box.put(DraftConstants.boxKeyName, textEditingController.text);
             },
             child: const Text('Add Name'),
           ),
           ValueListenableBuilder(
-            valueListenable: box.listenable(keys: ['name']),
+            valueListenable: _box.listenable(keys: [DraftConstants.boxKeyName]),
             builder: (BuildContext context, Box box, widget) {
-              return Text('Name: ${box.get('name')}');
+              return Text('Name: ${box.get(DraftConstants.boxKeyName)}');
             },
           ),
           const DraftHiveText(),
@@ -73,12 +90,12 @@ class DraftHiveText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final box = Hive.box('myBox');
+    final box = Hive.box(DraftConstants.boxName);
 
     return ValueListenableBuilder(
-      valueListenable: box.listenable(keys: ['name']),
+      valueListenable: box.listenable(keys: [DraftConstants.boxKeyName]),
       builder: (BuildContext context, Box nameBox, child) {
-        return Text('${nameBox.get('name')}');
+        return Text('box: ${box.values}');
       },
     );
   }

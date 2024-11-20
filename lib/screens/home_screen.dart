@@ -5,7 +5,6 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:spaced/spaced.dart';
 
 import '../constants/app_constants.dart';
-import '../widgets/draft_hive_text.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -70,7 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
           ),
-          const DraftHiveText(),
         ],
       ),
     );

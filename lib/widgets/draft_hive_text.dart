@@ -12,7 +12,7 @@ class DraftHiveText extends StatelessWidget {
       valueListenable: HiveService.getNameListenable(),
       builder: (context, Box box, _) {
         return Text(
-          box.get(AppConstants.kNameKey, defaultValue: ''),
+          '${box.get(AppConstants.kNameKey, defaultValue: '')} box: ${box.toString()}',
           style: Theme.of(context).textTheme.bodyLarge,
         );
       },

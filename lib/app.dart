@@ -1,7 +1,6 @@
+import 'package:example_hive/screens/home_screen.dart';
 import 'package:example_hive/widgets/unfocus.dart';
 import 'package:flutter/material.dart';
-
-import 'drafts/draft_hive_example.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
